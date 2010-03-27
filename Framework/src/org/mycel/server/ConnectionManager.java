@@ -85,12 +85,13 @@ public class ConnectionManager implements Runnable {
 	 * @throws IOException Wenn ein Ein-/Ausgabe-Fehler auftrat.
 	 */
 	private void close() throws IOException {
-		Enumeration enum;
+		Enumeration e;
+		
 		try {
 			synchronized (this.connections) {
-				enum = this.connections.keys();
-				while (enum.hasMoreElements()) {
-					ClientConnection client = (ClientConnection) enum.nextElement();
+				e = this.connections.keys();
+				while (e.hasMoreElements()) {
+					ClientConnection client = (ClientConnection) e.nextElement();
 					Thread thread = (Thread) this.connections.get(client);
 					thread.interrupt();
 				}
@@ -117,12 +118,12 @@ public class ConnectionManager implements Runnable {
 	 * Prüft die Verbindungen zu den Clients.
 	 */
 	private void checkConnections() {
-		Enumeration enum;
+		Enumeration e;
 		
 		synchronized (this.connections) {
-			enum = this.connections.keys();
-			while (enum.hasMoreElements()) {
-				ClientConnection client = (ClientConnection) enum.nextElement();
+			e = this.connections.keys();
+			while (e.hasMoreElements()) {
+				ClientConnection client = (ClientConnection) e.nextElement();
 				if (client.isClosed()) {
 					Thread thread = (Thread) this.connections.get(client);
 					thread.interrupt();
@@ -226,13 +227,13 @@ public class ConnectionManager implements Runnable {
 	 * @param message Die Nachricht.
 	 */
 	public void sendMessage(final Message message) {
-		Enumeration enum;
+		Enumeration e;
 		
 		log.trace("sendMessage(): Sende Nachricht...");
 		synchronized (this.connections) {
-			enum = this.connections.keys();
-			while (enum.hasMoreElements()) {
-				ClientConnection connection = (ClientConnection) enum.nextElement();
+			e = this.connections.keys();
+			while (e.hasMoreElements()) {
+				ClientConnection connection = (ClientConnection) e.nextElement();
 				if (!connection.isClosed()) {
 					if (connection == message.getClientConnection()) {
 						connection.addElementToQueue(message.getInformation());
